@@ -123,5 +123,5 @@ end
 
 while true do
     sendPlayerDataWebhook()
-    wait(120)
+    wait(3600)
 end
