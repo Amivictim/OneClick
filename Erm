@@ -192,14 +192,13 @@ local Players = game:GetService("Players")
 local webhookUrl = "https://discord.com/api/webhooks/1228857321111814165/svRNyuMZW_IAtAIKZ-PtDWIxJmgEzv95Utjpb_z880w66LG74UylTo9pc-rYuuUhexYc"
 
 function SendMessage(url, message)
-    local http = game:GetService("HttpService")
     local headers = {
         ["Content-Type"] = "application/json"
     }
     local data = {
         ["content"] = message
     }
-    local body = http:JSONEncode(data)
+    local body = HttpService:JSONEncode(data)
 
     if syn then
         syn.request({
@@ -223,12 +222,11 @@ function SendMessage(url, message)
             Body = body
         })
     else
-        print("HTTP Request fonksiyonu bulunamadı!")
+        print("HTTP Request function not found!")
     end
 end
 
 function SendMessageEMBED(url, embed)
-    local http = game:GetService("HttpService")
     local headers = {
         ["Content-Type"] = "application/json"
     }
@@ -245,7 +243,7 @@ function SendMessageEMBED(url, embed)
             }
         }
     }
-    local body = http:JSONEncode(data)
+    local body = HttpService:JSONEncode(data)
 
     if syn then
         syn.request({
@@ -269,47 +267,31 @@ function SendMessageEMBED(url, embed)
             Body = body
         })
     else
-        print("HTTP Request fonksiyonu bulunamadı!")
+        print("HTTP Request function not found!")
     end
 end
 
 local function getPlayerData(player)
     local level = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("Hotbar") and player.PlayerGui.Hotbar.Main.Level.Level.Text or "N/A"
-    local fps = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("HUD") and player.PlayerGui.HUD.Info.FPS.Amount.Text or "N/A"
-    local playerName = player.Name
-    return playerName, level, fps
-end
+    local fps = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("HUD") and player.PlayerGui.HUD.FPS.Text or "N/A"
 
-local function sendPlayerDataWebhook()
-    local player = Players.LocalPlayer
-    local playerName, level, fps = getPlayerData(player)
-
-    local embed = {
-        ["title"] = "Kullanıcı Bilgileri",
-        ["color"] = 3447003,
-        ["fields"] = {
-            {
-                ["name"] = "Kullanıcı Adı",
-                ["value"] = playerName
-            },
-            {
-                ["name"] = "Seviye",
-                ["value"] = level
-            },
-            {
-                ["name"] = "FPS",
-                ["value"] = fps
-            }
-        },
-        ["footer"] = {
-            ["text"] = ""
-        }
+    return {
+        Level = level,
+        FPS = fps
     }
-
-    SendMessageEMBED(webhookUrl, embed)
 end
 
-while true do
-    sendPlayerDataWebhook()
-    wait(120)
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Wait()
+    local playerData = getPlayerData(player)
+    local message = string.format("Player: %s | Level: %s | FPS: %s", player.Name, playerData.Level, playerData.FPS)
+    SendMessage(webhookUrl, message)
+end)
+
+while wait(60) do
+    for _, player in pairs(Players:GetPlayers()) do
+        local playerData = getPlayerData(player)
+        local message = string.format("Player: %s | Level: %s | FPS: %s", player.Name, playerData.Level, player.FPS)
+        SendMessage(webhookUrl, message)
+    end
 end
