@@ -200,13 +200,31 @@ function SendMessage(url, message)
         ["content"] = message
     }
     local body = http:JSONEncode(data)
-    local response = request({
-        Url = url,
-        Method = "POST",
-        Headers = headers,
-        Body = body
-    })
-    print("Sent")
+
+    if syn then
+        syn.request({
+            Url = url,
+            Method = "POST",
+            Headers = headers,
+            Body = body
+        })
+    elseif http_request then
+        http_request({
+            Url = url,
+            Method = "POST",
+            Headers = headers,
+            Body = body
+        })
+    elseif request then
+        request({
+            Url = url,
+            Method = "POST",
+            Headers = headers,
+            Body = body
+        })
+    else
+        print("HTTP Request fonksiyonu bulunamadı!")
+    end
 end
 
 function SendMessageEMBED(url, embed)
@@ -228,13 +246,31 @@ function SendMessageEMBED(url, embed)
         }
     }
     local body = http:JSONEncode(data)
-    local response = request({
-        Url = url,
-        Method = "POST",
-        Headers = headers,
-        Body = body
-    })
-    print("Sent")
+
+    if syn then
+        syn.request({
+            Url = url,
+            Method = "POST",
+            Headers = headers,
+            Body = body
+        })
+    elseif http_request then
+        http_request({
+            Url = url,
+            Method = "POST",
+            Headers = headers,
+            Body = body
+        })
+    elseif request then
+        request({
+            Url = url,
+            Method = "POST",
+            Headers = headers,
+            Body = body
+        })
+    else
+        print("HTTP Request fonksiyonu bulunamadı!")
+    end
 end
 
 local function getPlayerData(player)
@@ -275,5 +311,5 @@ end
 
 while true do
     sendPlayerDataWebhook()
-    wait(30)
+    wait(120)
 end
