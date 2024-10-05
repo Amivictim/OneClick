@@ -165,27 +165,33 @@ if game.PlaceId == 16277809958 then
 
     local function autoRetry()
         while true do
-            local unitLevel = playerGui.Hotbar.Main.Units["1"].UnitTemplate.Holder.Main.LevelFrame.Level
-            local stageName = playerGui.Guides.List.StageInfo.StageName.Text
+            local levelFrame = playerGui.Hotbar.Main.Units["1"].UnitTemplate.Holder.Main.LevelFrame
+            local stageInfo = playerGui.Guides.List.StageInfo
 
-            if unitLevel < 50 then
-                local args = {
-                    [1] = "Retry"
-                }
-                game:GetService("ReplicatedStorage").Networking.EndScreen.VoteEvent:FireServer(unpack(args))
-            elseif unitLevel == 50 then
-                local args = {
-                    [1] = "Next"
-                }
-                game:GetService("ReplicatedStorage").Networking.EndScreen.VoteEvent:FireServer(unpack(args))
-            end
+            if levelFrame and levelFrame.Level and levelFrame.Level.Text and stageInfo and stageInfo.StageName then
+                local unitLevel = tonumber(levelFrame.Level.Text) or 0
+                local stageName = stageInfo.StageName.Text
 
-            -- "Infinity" aşamasında sürekli "Retry" yapma
-            if stageName == "Stage 1 - Infinity" and unitLevel == 50 then
-                local args = {
-                    [1] = "Retry"
-                }
-                game:GetService("ReplicatedStorage").Networking.EndScreen.VoteEvent:FireServer(unpack(args))
+                if unitLevel < 50 then
+                    local args = {
+                        [1] = "Retry"
+                    }
+                    game:GetService("ReplicatedStorage").Networking.EndScreen.VoteEvent:FireServer(unpack(args))
+                elseif unitLevel >= 50 then
+                    if stageName == "Stage 1 - Infinity" then
+                        local args = {
+                            [1] = "Retry"
+                        }
+                        game:GetService("ReplicatedStorage").Networking.EndScreen.VoteEvent:FireServer(unpack(args))
+                    else
+                        local args = {
+                            [1] = "Next"
+                        }
+                        game:GetService("ReplicatedStorage").Networking.EndScreen.VoteEvent:FireServer(unpack(args))
+                    end
+                end
+            else
+                print("LevelFrame veya sahne bilgisi bulunamadı!")
             end
             
             wait(20)
