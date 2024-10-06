@@ -85,7 +85,7 @@ local function setupLobby()
         [2] = {
             [1] = "Story",
             [2] = "Stage1",
-            [3] = "ActInfinite",
+            [3] = "Infinite",
             [4] = "Normal",
             [5] = 4,
             [6] = 0,
