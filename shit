@@ -79,22 +79,21 @@ local function setupLobby()
     }
     ReplicatedStorage.Networking.LobbyEvent:FireServer(unpack(argsEnter))
     wait(0.2)
-
     local argsConfirm = {
-        [1] = "Confirm",
-        [2] = {
-            [1] = "Story",
-            [2] = "Stage1",
-            [3] = "Act1",
-            [4] = "Normal",
-            [5] = 4,
-            [6] = 0,
-            [7] = false
-        }
+    [1] = "Confirm",
+    [2] = {
+        [1] = "Story",
+        [2] = "Stage1",
+        [3] = "ActInfinite",
+        [4] = "Normal",
+        [5] = 4,
+        [6] = 0,
+        [7] = true
     }
-    ReplicatedStorage.Networking.LobbyEvent:FireServer(unpack(argsConfirm))
-    wait(0.5)
+}
 
+game:GetService("ReplicatedStorage").Networking.LobbyEvent:FireServer(unpack(argsConfirm))
+    wait(0.5)
     local startArgs = {
         [1] = "Start"
     }
