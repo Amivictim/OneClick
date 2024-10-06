@@ -73,12 +73,13 @@ local function claimTutorial()
 end
 
 local function setupLobby()
+    wait(3)
     local argsEnter = {
         [1] = "Enter",
         [2] = workspace.MainLobby.Lobby.Stories.Lobby
     }
     ReplicatedStorage.Networking.LobbyEvent:FireServer(unpack(argsEnter))
-    wait(5)
+    wait(3)
 
     local argsConfirm = {
         [1] = "Confirm",
