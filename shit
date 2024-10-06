@@ -165,30 +165,10 @@ if game.PlaceId == 16277809958 then
 
     local function autoRetry()
         while true do
-            local unitLevelText = playerGui.Hotbar.Main.Units["1"].UnitTemplate.Holder.Main.LevelFrame.Level.Text
-            local unitLevel = tonumber(unitLevelText) or 0
-
-            local stageName = playerGui.Guides.List.StageInfo.StageName.Text
-
-            if unitLevel < 50 then
-                local args = {
-                    [1] = "Retry"
-                }
-                game:GetService("ReplicatedStorage").Networking.EndScreen.VoteEvent:FireServer(unpack(args))
-            elseif unitLevel == 50 then
-                local args = {
-                    [1] = "Next"
-                }
-                game:GetService("ReplicatedStorage").Networking.EndScreen.VoteEvent:FireServer(unpack(args))
-            end
-
-            if stageName == "Stage 1 - Infinity" and unitLevel == 50 then
-                local args = {
-                    [1] = "Retry"
-                }
-                game:GetService("ReplicatedStorage").Networking.EndScreen.VoteEvent:FireServer(unpack(args))
-            end
-            
+            local args = {
+                [1] = "Retry"
+            }
+            game:GetService("ReplicatedStorage").Networking.EndScreen.VoteEvent:FireServer(unpack(args))
             wait(20)
         end
     end
