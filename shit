@@ -79,21 +79,22 @@ local function setupLobby()
     }
     ReplicatedStorage.Networking.LobbyEvent:FireServer(unpack(argsEnter))
     wait(0.2)
-    local argsConfirm = {
-    [1] = "Confirm",
-    [2] = {
-        [1] = "Story",
-        [2] = "Stage1",
-        [3] = "ActInfinite",
-        [4] = "Normal",
-        [5] = 4,
-        [6] = 0,
-        [7] = true
-    }
-}
 
-game:GetService("ReplicatedStorage").Networking.LobbyEvent:FireServer(unpack(argsConfirm))
+    local argsConfirm = {
+        [1] = "Confirm",
+        [2] = {
+            [1] = "Story",
+            [2] = "Stage1",
+            [3] = "Act5",
+            [4] = "Normal",
+            [5] = 4,
+            [6] = 0,
+            [7] = true
+        }
+    }
+    ReplicatedStorage.Networking.LobbyEvent:FireServer(unpack(argsConfirm))
     wait(0.5)
+
     local startArgs = {
         [1] = "Start"
     }
@@ -164,10 +165,30 @@ if game.PlaceId == 16277809958 then
 
     local function autoRetry()
         while true do
-            local args = {
-                [1] = "Next"
-            }
-            game:GetService("ReplicatedStorage").Networking.EndScreen.VoteEvent:FireServer(unpack(args))
+            local unitLevelText = playerGui.Hotbar.Main.Units["1"].UnitTemplate.Holder.Main.LevelFrame.Level.Text
+            local unitLevel = tonumber(unitLevelText) or 0
+
+            local stageName = playerGui.Guides.List.StageInfo.StageName.Text
+
+            if unitLevel < 50 then
+                local args = {
+                    [1] = "Retry"
+                }
+                game:GetService("ReplicatedStorage").Networking.EndScreen.VoteEvent:FireServer(unpack(args))
+            elseif unitLevel == 50 then
+                local args = {
+                    [1] = "Next"
+                }
+                game:GetService("ReplicatedStorage").Networking.EndScreen.VoteEvent:FireServer(unpack(args))
+            end
+
+            if stageName == "Stage 1 - Infinity" and unitLevel == 50 then
+                local args = {
+                    [1] = "Retry"
+                }
+                game:GetService("ReplicatedStorage").Networking.EndScreen.VoteEvent:FireServer(unpack(args))
+            end
+            
             wait(20)
         end
     end
