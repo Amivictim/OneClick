@@ -78,7 +78,7 @@ local function setupLobby()
         [2] = workspace.MainLobby.Lobby.Stories.Lobby
     }
     ReplicatedStorage.Networking.LobbyEvent:FireServer(unpack(argsEnter))
-    wait(0.2)
+    wait(0.5)
 
     local argsConfirm = {
         [1] = "Confirm",
@@ -86,7 +86,7 @@ local function setupLobby()
             [1] = "Story",
             [2] = "Stage1",
             [3] = "ActInfinite",
-            [4] = "Normal",
+            [4] = "Nightmare",
             [5] = 4,
             [6] = 0,
             [7] = true
