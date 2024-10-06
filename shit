@@ -86,10 +86,10 @@ local function setupLobby()
             [1] = "Story",
             [2] = "Stage1",
             [3] = "ActInfinite",
-            [4] = "Nightmare",
+            [4] = "Normal",
             [5] = 4,
             [6] = 0,
-            [7] = true
+            [7] = false
         }
     }
     ReplicatedStorage.Networking.LobbyEvent:FireServer(unpack(argsConfirm))
