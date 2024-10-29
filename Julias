@@ -1,0 +1,233 @@
+repeat task.wait() until game.Players.LocalPlayer.Character
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local player = game:GetService("Players").LocalPlayer
+local playerGui = player.PlayerGui
+
+local function triggerDialogueEvents()
+    local argsDialogue1 = {
+        [1] = "Interact",
+        [2] = {
+            [1] = "StarterUnitDialogue",
+            [2] = 1,
+            [3] = "Okay!"
+        }
+    }
+    ReplicatedStorage.Networking.State.DialogueEvent:FireServer(unpack(argsDialogue1))
+    wait(0.5)
+
+    local argsDialogue2 = {
+        [1] = "Interact",
+        [2] = {
+            [1] = "StarterUnitDialogue",
+            [2] = 2,
+            [3] = "Yeah!"
+        }
+    }
+    ReplicatedStorage.Networking.State.DialogueEvent:FireServer(unpack(argsDialogue2))
+    wait(0.5)
+end
+
+local function selectLuffy()
+    local argsSelect = {
+        [1] = "Select",
+        [2] = "Luffo"
+    }
+    ReplicatedStorage.Networking.Units.UnitSelectionEvent:FireServer(unpack(argsSelect))
+end
+
+local function equipLuffy()
+    local unitsFolder = playerGui.Windows.Units.Holder.Main.Units
+
+    for _, unit in pairs(unitsFolder:GetChildren()) do
+        if unit:FindFirstChild("Holder") and unit.Holder:FindFirstChild("Main") then
+            local unitName = unit.Holder.Main.UnitName.Text
+            if unitName == "Luffo" then
+                local unitID = unit.Name
+
+                local argsEquip = {
+                    [1] = "Equip",
+                    [2] = unitID
+                }
+                ReplicatedStorage.Networking.Units.EquipEvent:FireServer(unpack(argsEquip))
+                
+                wait(1)
+                local equippedUnit = playerGui.HUD.Main.Units["1"].UnitTemplate.Holder.Main.UnitName.Text
+                if equippedUnit == "Luffo" then
+                    return true
+                else
+                    return false
+                end
+            end
+        end
+    end
+    return false
+end
+
+local function claimTutorial()
+    local args = {
+        [1] = "ClaimTutorial",
+        [2] = "PlayTutorial"
+    }
+    ReplicatedStorage.Networking.ClientListeners.TutorialEvent:FireServer(unpack(args))
+end
+
+local function setupLobby()
+    wait(3)
+    local argsEnter = {
+        [1] = "Enter",
+        [2] = workspace.MainLobby.Lobby.Stories.Lobby
+    }
+    ReplicatedStorage.Networking.LobbyEvent:FireServer(unpack(argsEnter))
+    wait(3)
+
+    local argsConfirm = {
+        [1] = "Confirm",
+        [2] = {
+            [1] = "Story",
+            [2] = "Stage1",
+            [3] = "Infinite",
+            [4] = "Normal",
+            [5] = 4,
+            [6] = 0,
+            [7] = false
+        }
+    }
+    ReplicatedStorage.Networking.LobbyEvent:FireServer(unpack(argsConfirm))
+    wait(3)
+
+    local startArgs = {
+        [1] = "Start"
+    }
+    ReplicatedStorage.Networking.LobbyEvent:FireServer(unpack(startArgs))
+end
+
+local function automateGame()
+    triggerDialogueEvents()
+    wait(1)
+    selectLuffy()
+    wait(1)
+    
+    if equipLuffy() then
+        claimTutorial()
+        setupLobby()
+    end
+end
+
+if game.PlaceId == 16146832113 then
+    automateGame()
+end
+
+if game.PlaceId == 16277809958 then
+    local function placeJulias()
+        local positions = {
+            Vector3.new(135.9434, 8.6027, 118.1476),
+            Vector3.new(135.6653, 8.6027, 120.3064),
+            Vector3.new(133.7887, 8.6027, 118.9839)
+        }
+
+        for _, position in ipairs(positions) do
+            local args = {
+                [1] = "Render",
+                [2] = {
+                    [1] = "Julias",
+                    [2] = 68,
+                    [3] = position,
+                    [4] = 0
+                }
+            }
+            game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer(unpack(args))
+            wait(0.5)
+        end
+    end
+
+    local function placeHarukaRin()
+        local position = Vector3.new(138, 8.6120, 120.2552)
+
+        local args = {
+            [1] = "Render",
+            [2] = {
+                [1] = "Haruka Rin",
+                [2] = 25,
+                [3] = position,
+                [4] = 0
+            }
+        }
+        game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer(unpack(args))
+    end
+
+    local function placeLuffo()
+        local positions = {
+            Vector3.new(147.9230194091797, 8.740114212036133, 119.36970520019531),
+            Vector3.new(140.91946411132812, 8.740113258361816, 122.12967681884766),
+            Vector3.new(145.8940887451172, 8.740114212036133, 121.12303161621094),
+            Vector3.new(145.8784637451172, 8.740113258361816, 119.39696502685547),
+            Vector3.new(140.93310546875, 8.740113258361816, 123.86903381347656),
+            Vector3.new(138.90872192382812, 8.740113258361816, 124.1600112915039)
+        }
+
+        for _, position in ipairs(positions) do
+            local args = {
+                [1] = "Render",
+                [2] = {
+                    [1] = "Luffo",
+                    [2] = 39,
+                    [3] = position,
+                    [4] = 0
+                }
+            }
+            game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer(unpack(args))
+            wait(0.5)
+        end
+    end
+
+    local function autoUpgradeUnits()
+        local unitFolder = game:GetService("Workspace").Units
+
+        for _, unit in pairs(unitFolder:GetChildren()) do
+            if unit:IsA("Model") then
+                local args = {
+                    [1] = "Upgrade",
+                    [2] = unit.Name
+                }
+                game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer(unpack(args))
+                wait(0.5)
+            end
+        end
+    end
+
+    local function skipWave()
+        local args = {
+            [1] = "Skip"
+        }
+        game:GetService("ReplicatedStorage").Networking.SkipWaveEvent:FireServer(unpack(args))
+    end
+
+    local function autoRetry()
+        while true do
+            local args = {
+                [1] = "Retry"
+            }
+            game:GetService("ReplicatedStorage").Networking.EndScreen.VoteEvent:FireServer(unpack(args))
+            wait(10)
+        end
+    end
+
+    local function autoPlay()
+        while true do
+            skipWave()
+            wait(5)
+            placeJulias()
+            wait(10)
+            placeHarukaRin()
+            wait(15)
+            placeLuffo()
+            wait(20)
+
+            autoUpgradeUnits()  
+        end
+    end
+
+    coroutine.wrap(autoRetry)()  
+    autoPlay()  
+end
