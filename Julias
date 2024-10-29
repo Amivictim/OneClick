@@ -219,11 +219,11 @@ if game.PlaceId == 16277809958 then
             skipWave()
             wait(5)
             placeJulias()
-            wait(10)
+            wait(5)
             placeHarukaRin()
-            wait(15)
+            wait(5)
             placeLuffo()
-            wait(20)
+            wait(5)
 
             autoUpgradeUnits()  
         end
