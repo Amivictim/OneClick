@@ -36,32 +36,34 @@ local function selectLuffy()
     ReplicatedStorage.Networking.Units.UnitSelectionEvent:FireServer(unpack(argsSelect))
 end
 
-local function equipLuffy()
+local function equipUnits()
     local unitsFolder = playerGui.Windows.Units.Holder.Main.Units
 
-    for _, unit in pairs(unitsFolder:GetChildren()) do
-        if unit:FindFirstChild("Holder") and unit.Holder:FindFirstChild("Main") then
-            local unitName = unit.Holder.Main.UnitName.Text
-            if unitName == "Luffo" then
-                local unitID = unit.Name
+    local unequipArgs = {
+        [1] = "UnequipAll"
+    }
+    ReplicatedStorage.Networking.Units.EquipEvent:FireServer(unpack(unequipArgs))
+    
+    local unitsToEquip = {"Julias", "Haruka Rin", "Luffo"}
 
-                local argsEquip = {
-                    [1] = "Equip",
-                    [2] = unitID
-                }
-                ReplicatedStorage.Networking.Units.EquipEvent:FireServer(unpack(argsEquip))
-                
-                wait(1)
-                local equippedUnit = playerGui.HUD.Main.Units["1"].UnitTemplate.Holder.Main.UnitName.Text
-                if equippedUnit == "Luffo" then
-                    return true
-                else
-                    return false
+    for _, unitName in ipairs(unitsToEquip) do
+        for _, unit in pairs(unitsFolder:GetChildren()) do
+            if unit:FindFirstChild("Holder") and unit.Holder:FindFirstChild("Main") then
+                local unitUnitName = unit.Holder.Main.UnitName.Text
+                if unitUnitName == unitName then
+                    local unitID = unit.Name
+
+                    local equipArgs = {
+                        [1] = "Equip",
+                        [2] = unitID
+                    }
+                    ReplicatedStorage.Networking.Units.EquipEvent:FireServer(unpack(equipArgs))
+                    wait(0.5)
+                    break
                 end
             end
         end
     end
-    return false
 end
 
 local function claimTutorial()
@@ -108,10 +110,9 @@ local function automateGame()
     selectLuffy()
     wait(1)
     
-    if equipLuffy() then
-        claimTutorial()
-        setupLobby()
-    end
+    equipUnits()
+    claimTutorial()
+    setupLobby()
 end
 
 if game.PlaceId == 16146832113 then
