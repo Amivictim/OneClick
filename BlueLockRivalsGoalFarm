@@ -1,0 +1,70 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+local Window = Library:NewWindow("Football Script")
+local Tab = Window:NewSection("Main")
+
+local player = game:GetService("Players").LocalPlayer
+local autoTeleport = false
+
+Tab:CreateToggle("Auto Teleport", function(value)
+    autoTeleport = value
+end)
+
+local function findBallHolder()
+    for _, plr in pairs(workspace:GetChildren()) do
+        if plr:FindFirstChild("Values") and plr.Values:FindFirstChild("HasBall") then
+            if plr.Values.HasBall.Value == true then
+                return plr
+            end
+        end
+    end
+    return nil
+end
+
+local function getPlayerTeam()
+    local playerName = player.Name
+    local pickTeamGui = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("PickTeam")
+    if not pickTeamGui then return "NONE" end
+
+    for _, obj in pairs(pickTeamGui:FindFirstChild("Away"):GetChildren()) do
+        if obj:FindFirstChild("plr") and obj.plr:IsA("TextLabel") and obj.plr.Text == playerName then
+            return "AWAY"
+        end
+    end
+
+    for _, obj in pairs(pickTeamGui:FindFirstChild("Home"):GetChildren()) do
+        if obj:FindFirstChild("plr") and obj.plr:IsA("TextLabel") and obj.plr.Text == playerName then
+            return "HOME"
+        end
+    end
+    return "NONE"
+end
+
+task.spawn(function()
+    while true do
+        task.wait(0.1)
+        
+        if not autoTeleport then continue end
+
+        local ballHolder = findBallHolder()
+        local ballRootPart = workspace:FindFirstChild("Football") and workspace.Football:FindFirstChild("BallAnims") and workspace.Football.BallAnims:FindFirstChild("RootPart")
+
+        if ballHolder and ballHolder ~= player.Character then
+            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                player.Character.HumanoidRootPart.CFrame = ballHolder.HumanoidRootPart.CFrame
+            end
+            game:GetService("ReplicatedStorage").Packages.Knit.Services.BallService.RE.Slide:FireServer()
+
+        elseif ballHolder == player.Character then
+            local team = getPlayerTeam()
+            if team ~= "NONE" and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                local targetPosition = team == "AWAY" and Vector3.new(320, 17, -49) or Vector3.new(-243, 16, -50)
+                player.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+            end
+
+        elseif not ballHolder and ballRootPart then
+            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                player.Character.HumanoidRootPart.CFrame = ballRootPart.CFrame
+            end
+        end
+    end
+end)
